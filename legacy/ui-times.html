@@ -1,0 +1,45 @@
+<!--
+  This file is part of ui-times.html.
+
+  ui-times.html is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the Free
+  Software Foundation, either version 3 of the License, or (at your option) any
+  later version.
+
+  ui-times.html is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+  details.
+
+  You should have received a copy of the GNU General Public License along with
+  ui-times.html (file COPYING in the main directory). If not, see
+  <http://www.gnu.org/licenses/>.
+-->
+
+<style></style>
+
+<template>
+  <template name="config">
+     <div id="{#}">
+       Item {test}
+       <template name="even">
+         <span>(even {foo})</span>
+       </template>
+       <template name="odd">
+         <span>(odd {bar})</span>
+       </template>
+     </div>
+  </template>
+</template>
+
+<script>
+  Element `ui-times` (class extends HTMLElement {
+    initialize() {
+    }
+
+    get config() {
+      return [ { test: "One", odd: [ {bar: 1 }, { bar: 2 }, { bar: 3 } ] }, { test: "Two", even: { foo: 2 } } ];
+    }
+  });
+</script>
+

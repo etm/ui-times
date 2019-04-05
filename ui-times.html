@@ -1,0 +1,220 @@
+<!--
+  This file is part of ui-times.html.
+
+  ui-times.html is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the Free
+  Software Foundation, either version 3 of the License, or (at your option) any
+  later version.
+
+  ui-times.html is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+  details.
+
+  You should have received a copy of the GNU General Public License along with
+  ui-times.html (file COPYING in the main directory). If not, see
+  <http://www.gnu.org/licenses/>.
+-->
+
+<style>
+  ui-times {
+    display: inline-table;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 20em;
+    vertical-align: middle;
+
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+  }
+
+  ui-times > div {
+    border: 0 none;
+    display: table-cell;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  ui-times > div > ui-times-content {
+    display: flex;
+    border: 0.1em solid black;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 0.1em;
+    vertical-align: middle;
+    background-color: #fab6b6;
+  }
+  ui-times > div > ui-times-content > ui-times-duration {
+    flex: 1 1 auto;
+  }
+  ui-times > div > ui-times-content > ui-times-duration:hover {
+    cursor: grab;
+  }
+  ui-times > div > ui-times-content > ui-times-duration.ui-times-draggable {
+    cursor: grabbing;
+  }
+  ui-times > div > ui-times-content > ui-times-resize {
+    flex: 0 0 auto;
+    border-left: 0.1em solid black;
+    background-color: #729fcf;
+  }
+  ui-times > div > ui-times-content > ui-times-resize {
+    cursor: col-resize;
+  }
+  ui-times > div > ui-times-space {
+    display: flex;
+    border: 0.1em solid black;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 0.1em;
+    vertical-align: middle;
+  }
+</style>
+
+<template>
+  <template name="config">
+     <div style="width: {percent}%" >
+       <template name="space">
+         <ui-times-space>
+           <span></span><span>&#160;</span>
+         </ui-times-space>
+       </template>
+       <template name="time">
+         <ui-times-content>
+           <ui-times-duration></ui-times-duration>
+           <ui-times-resize>&#160;</ui-times-resize>
+         </ui-times-content>
+       </template>
+     </div>
+  </template>
+</template>
+
+<script>
+  function parseTime(str) {
+    var eles = str.split(":")
+    return time = parseInt(eles[0]) * 60 + parseInt(eles[1])
+  }
+
+  function formatTime(num) {
+    return (num/60) + ":" + (num%60);
+  }
+
+  function parseTimePair(str) {
+    var times = str.split("-")
+    var tfrom = parseTime(times[0]);
+    var tto = parseTime(times[1]);
+    return { time: { from: formatTime(tfrom), to: formatTime(tto) }, from: tfrom, to: tto, percent: 0 }
+  }
+
+  Element `ui-times` (class extends HTMLElement {
+    initialize() {
+      let self = this;
+      let pat = { space: true, from: 0, to: 1440 };
+      let parameters = this.parameters = [ $.extend({}, pat) ];
+      this.currLeft = 0;
+      $(self).attr('config').split(";").forEach(function(ele) {
+        var pair = parseTimePair(ele);
+        var next = $.extend({}, pat);
+        var last = parameters[parameters.length-1];
+        last.to = pair.from;
+        next.from = pair.to;
+        pair.percent = (pair.to - pair.from) / (1440 / 100);
+        last.percent = (last.to - last.from) / (1440 / 100);
+        parameters.push(pair);
+        parameters.push(next);
+      });
+      var last = parameters[parameters.length-1];
+      last.percent = (last.to - last.from) / (1440 / 100);
+      $(document).ready(function() {
+        self.ui_times_drag();
+        self.ui_times_resize();
+      });
+    }
+
+    ui_times_drag() {
+      let what = $(this).find('div > ui-times-content > ui-times-duration');
+      let self = this;
+      what.on("mousedown", function(e) {
+        let drag = $(e.target);
+        drag.addClass('ui-times-draggable');
+        $(document).one("mouseup", function(e) {
+          drag.removeClass('ui-times-draggable');
+          e.preventDefault();
+        });
+        self.currLeft = e.originalEvent.pageX - drag.parent().parent().offset().left;
+        e.preventDefault();
+      });
+
+      $(document).on("mousemove", function(e) {
+        let drag = $('.ui-times-draggable');
+        let next;
+        let curr;
+        let prev;
+        if (!drag.hasClass('ui-times-draggable'))
+          return;
+
+        curr = drag.parent().parent();
+        next = drag.parent().parent().next();
+        prev = drag.parent().parent().prev();
+
+        let total = prev.outerWidth() + next.outerWidth();
+        let pos = e.pageX - self.currLeft  - prev.offset().left;
+        if (pos < 0 ) {
+            pos = 0;
+        }
+        if (pos >= total) {
+           pos = total;
+        }
+
+        prev.css('width', pos + "px");
+        next.css('width', total - pos + "px");
+
+        e.preventDefault();
+      });
+    }
+    ui_times_resize() {
+      let what = $(this).find('div > ui-times-content > ui-times-resize');
+      what.on("mousedown", function(e) {
+        let drag = $(e.target);
+        drag.addClass('ui-times-resize');
+        $(document).one("mouseup", function(e) {
+          drag.removeClass('ui-times-resize');
+          e.preventDefault();
+        });
+        e.preventDefault();
+      });
+
+      $(document).on("mousemove", function(e) {
+        let drag = $('.ui-times-resize');
+        let next;
+        let curr;
+        if (!drag.hasClass('ui-times-resize'))
+          return;
+
+        next = drag.parent().parent().next();
+        curr = drag.parent().parent();
+
+        let total = curr.outerWidth() + next.outerWidth();
+        let pos = e.pageX - curr.offset().left;
+        if (pos < 0 ) {
+            pos = 0;
+        }
+        if (pos >= total) {
+           pos = total;
+        }
+
+        curr.css('width', pos + "px");
+        next.css('width', total - pos + "px");
+
+        e.preventDefault();
+      });
+    }
+
+    get config() {
+      return this.parameters;
+    }
+  });
+</script>
+
