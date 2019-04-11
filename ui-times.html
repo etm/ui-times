@@ -18,77 +18,180 @@
 
 <style>
   ui-times {
-    display: inline-table;
-    table-layout: fixed;
-    border-collapse: collapse;
-    width: 20em;
-    vertical-align: middle;
-
     -webkit-user-select: none; /* Safari 3.1+ */
     -moz-user-select: none; /* Firefox 2+ */
     -ms-user-select: none; /* IE 10+ */
     user-select: none; /* Standard syntax */
   }
 
-  ui-times > div {
+  ui-times > div.ui {
+    display: inline-table;
+    table-layout: fixed;
+    width: 20em;
+    vertical-align: middle;
+  }
+
+  ui-times > div.ui > div {
     border: 0 none;
     display: table-cell;
     height: 100%;
     overflow: hidden;
   }
 
-  ui-times > div > ui-times-content {
+  ui-times > div.ui > div > ui-times-content {
     display: flex;
     border: 0.1em solid black;
+    border-right: 0 none;
     overflow: hidden;
     white-space: nowrap;
-    margin-right: 0.1em;
-    vertical-align: middle;
     background-color: #fab6b6;
   }
-  ui-times > div > ui-times-content > ui-times-duration {
-    flex: 1 1 auto;
+  ui-times > div.ui > div:nth-last-child(2) > ui-times-content {
+    border: 0.1em solid black;
   }
-  ui-times > div > ui-times-content > ui-times-duration:hover {
+  ui-times > div.ui > div > ui-times-content > ui-times-duration {
+    flex: 1 1 auto;
+    border-right: 0.1em solid black;
+  }
+  ui-times > div.ui > div > ui-times-content > ui-times-duration:hover {
     cursor: grab;
   }
-  ui-times > div > ui-times-content > ui-times-duration.ui-times-draggable {
+  ui-times > div.ui > div > ui-times-content > ui-times-duration.ui-times-draggable {
     cursor: grabbing;
   }
-  ui-times > div > ui-times-content > ui-times-resize {
+  ui-times > div.ui > div > ui-times-content > ui-times-resize {
     flex: 0 0 auto;
-    border-left: 0.1em solid black;
     background-color: #729fcf;
-  }
-  ui-times > div > ui-times-content > ui-times-resize {
     cursor: col-resize;
   }
-  ui-times > div > ui-times-space {
+  ui-times > div.ui > div > ui-times-space {
     display: flex;
     border: 0.1em solid black;
+    border-right: 0 none;
     overflow: hidden;
     white-space: nowrap;
-    margin-right: 0.1em;
-    vertical-align: middle;
+  }
+  ui-times > div.ui > div:last-child > ui-times-space {
+    margin-right: 0;
+    border-right: 0.1em solid black;
+    border-left: 0 none;
+  }
+
+  ui-times > div.scale {
+    display: table;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 20em;
+  }
+  ui-times > div.scale > div {
+    border: 0 none;
+    display: table-cell;
+    overflow: hidden;
+    height: 0.2em;
+    line-height: 0;
+  }
+  ui-times > div.scale > div:after {
+    display: block;
+    content: "\00a0";
+    overflow: hidden;
+    height: 0.2em;
+    border-left: 0.1em solid black;
+  }
+
+  ui-times > div.scale > div:last-child:after {
+    border-right: 0.1em solid black;
+  }
+
+  ui-times > div.ui, ui-times > div.scale {
+    margin-left: 0.4em;
+  }
+
+  ui-times > div.labels {
+    display: table;
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 20.8em;
+  }
+  ui-times > div.labels > div {
+    border: 0 none;
+    display: table-cell;
+    overflow: hidden;
+    font-size: 0.45em;
+    text-align: center;
   }
 </style>
 
 <template>
-  <template name="config">
-     <div style="width: {percent}%" >
-       <template name="space">
-         <ui-times-space>
-           <span></span><span>&#160;</span>
-         </ui-times-space>
-       </template>
-       <template name="time">
-         <ui-times-content>
-           <ui-times-duration></ui-times-duration>
-           <ui-times-resize>&#160;</ui-times-resize>
-         </ui-times-content>
-       </template>
-     </div>
-  </template>
+  <div class="ui">
+    <template name="config">
+       <div style="width: {percent}%" >
+         <template name="space">
+           <ui-times-space>
+             <span></span><span>&#160;</span>
+           </ui-times-space>
+         </template>
+         <template name="time">
+           <ui-times-content>
+             <ui-times-duration></ui-times-duration>
+             <ui-times-resize>&#160;</ui-times-resize>
+           </ui-times-content>
+         </template>
+       </div>
+    </template>
+  </div>
+  <div class="scale">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="labels">
+    <div>0</div>
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+    <div>6</div>
+    <div>7</div>
+    <div>8</div>
+    <div>9</div>
+    <div>10</div>
+    <div>11</div>
+    <div>12</div>
+    <div>13</div>
+    <div>14</div>
+    <div>15</div>
+    <div>16</div>
+    <div>17</div>
+    <div>18</div>
+    <div>19</div>
+    <div>20</div>
+    <div>21</div>
+    <div>22</div>
+    <div>23</div>
+    <div>24</div>
+  </div>
 </template>
 
 <script>
@@ -113,6 +216,7 @@
       let self = this;
       let pat = { space: true, from: 0, to: 1440 };
       let parameters = this.parameters = [ $.extend({}, pat) ];
+      let ratio = this.ratio = 0;
       this.currLeft = 0;
       $(self).attr('config').split(";").forEach(function(ele) {
         var pair = parseTimePair(ele);
@@ -128,6 +232,7 @@
       var last = parameters[parameters.length-1];
       last.percent = (last.to - last.from) / (1440 / 100);
       $(document).ready(function() {
+        self.ratio = $(self).find('div.ui').outerWidth() / 1440;
         self.ui_times_drag();
         self.ui_times_resize();
       });
@@ -161,11 +266,11 @@
 
         let total = prev.outerWidth() + next.outerWidth();
         let pos = e.pageX - self.currLeft  - prev.offset().left;
-        if (pos < 0 ) {
-            pos = 0;
+        if (pos < 0) {
+          pos = 0;
         }
         if (pos >= total) {
-           pos = total;
+          pos = total;
         }
 
         prev.css('width', pos + "px");
@@ -176,6 +281,7 @@
     }
     ui_times_resize() {
       let what = $(this).find('div > ui-times-content > ui-times-resize');
+      let self = this;
       what.on("mousedown", function(e) {
         let drag = $(e.target);
         drag.addClass('ui-times-resize');
@@ -183,6 +289,7 @@
           drag.removeClass('ui-times-resize');
           e.preventDefault();
         });
+        self.currLeft = e.originalEvent.pageX - drag.offset().left;
         e.preventDefault();
       });
 
@@ -197,12 +304,12 @@
         curr = drag.parent().parent();
 
         let total = curr.outerWidth() + next.outerWidth();
-        let pos = e.pageX - curr.offset().left;
-        if (pos < 0 ) {
-            pos = 0;
+        let pos = e.pageX - curr.offset().left + (drag.outerWidth() - self.currLeft + 2.5);
+        if (pos < self.ratio * 60) {
+          pos = self.ratio * 60;
         }
         if (pos >= total) {
-           pos = total;
+          pos = total;
         }
 
         curr.css('width', pos + "px");
